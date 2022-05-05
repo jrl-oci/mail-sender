@@ -1,38 +1,35 @@
-# create-svelte
+# Mail Sender
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+To call SendGrid, you need an account set up.  You can run through the Prerequisite steps here:
+<https://docs.sendgrid.com/for-developers/sending-email/quickstart-nodejs>
 
-## Creating a project
+Once you have an API key, this needs to be in the environment as `SENDGRID_API_KEY`.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Make sure you also register a sender email.
 
-```bash
-# create a new project in the current directory
-npm init svelte
+To send an email, you make a `POST` request.  The data for SendGrid gets passed-through as-is.
 
-# create a new project in my-app
-npm init svelte my-app
+The API documentation for the expected format is [here](https://docs.sendgrid.com/api-reference/mail-send/mail-send#body).
+
+You can read some more example email JSON bundles here:
+<https://github.com/sendgrid/sendgrid-nodejs/blob/main/docs/use-cases/README.md>
+
+Here's a simple example:
+```json
+{
+    "to": "addressee@example.com",
+    "from": "registeredSender@example.com",
+    "subject": "Smell the Glove",
+    "text": "This is some text for that email I'm sending"
+}
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
+Save your json to a file called `request.json`.  Then, when the server is running, call the POST like so:
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+ curl -X POST -H 'Content-Type: application/json' -d @request.json http://localhost:3000/send
 ```
 
-## Building
+Verify in the console that you get a `202`.
 
-To create a production version of your app:
+And then check the spam folder of wherever you sent the email, since that's most likely where it will end up.
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
